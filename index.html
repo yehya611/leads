@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>No-Site Scanner — Find USA Businesses That Need a Website</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10151c;
+    --panel:#1a2330;
+    --panel-2:#212c3b;
+    --grid:#2b3a4a;
+    --paper:#eef2f5;
+    --muted:#8ea0b2;
+    --signal:#ffb020;
+    --signal-dim:#7a5a1e;
+    --verified:#49d6a3;
+    --danger:#ff6b6b;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      linear-gradient(var(--ink),var(--ink)),
+      repeating-linear-gradient(0deg, transparent 0 39px, rgba(43,58,74,0.35) 39px 40px),
+      repeating-linear-gradient(90deg, transparent 0 39px, rgba(43,58,74,0.35) 39px 40px);
+    color:var(--paper);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  header{
+    padding:40px 24px 24px;
+    max-width:980px;
+    margin:0 auto;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--signal);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:8px;height:8px;border-radius:50%;
+    background:var(--signal);
+    box-shadow:0 0 0 0 rgba(255,176,32,0.6);
+    animation:pulse 1.8s infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(255,176,32,0.55);}
+    70%{box-shadow:0 0 0 8px rgba(255,176,32,0);}
+    100%{box-shadow:0 0 0 0 rgba(255,176,32,0);}
+  }
+  h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:clamp(28px,4vw,44px);
+    line-height:1.08;
+    margin:14px 0 10px;
+    letter-spacing:-0.01em;
+  }
+  h1 span{color:var(--signal);}
+  .sub{
+    color:var(--muted);
+    font-size:15px;
+    line-height:1.55;
+    max-width:640px;
+  }
+  main{max-width:980px;margin:0 auto;padding:0 24px 80px;}
+
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--grid);
+    border-radius:var(--radius);
+    padding:24px;
+    margin-top:28px;
+  }
+  .panel h2{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:14px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--muted);
+    margin:0 0 18px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .panel h2 b{color:var(--paper);}
+
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+  .field{display:flex;flex-direction:column;gap:6px;}
+  .field label{font-size:12px;color:var(--muted);font-family:'IBM Plex Mono',monospace;letter-spacing:0.02em;}
+  .field input, .field select{
+    background:var(--ink);
+    border:1px solid var(--grid);
+    border-radius:6px;
+    padding:11px 12px;
+    color:var(--paper);
+    font-size:14px;
+    font-family:'Inter',sans-serif;
+    outline:none;
+    transition:border-color .15s;
+  }
+  .field input:focus{border-color:var(--signal);}
+  .field small{color:var(--muted);font-size:11.5px;}
+
+  .key-row{position:relative;}
+  .toggle-key{
+    position:absolute;right:10px;top:34px;
+    background:none;border:none;color:var(--muted);
+    font-size:11px;cursor:pointer;font-family:'IBM Plex Mono',monospace;
+  }
+
+  button.primary{
+    background:var(--signal);
+    color:#1a1300;
+    border:none;
+    border-radius:6px;
+    padding:13px 22px;
+    font-weight:600;
+    font-size:14px;
+    font-family:'Space Grotesk',sans-serif;
+    cursor:pointer;
+    transition:filter .15s, transform .1s;
+    display:inline-flex;align-items:center;gap:8px;
+  }
+  button.primary:hover{filter:brightness(1.08);}
+  button.primary:active{transform:scale(0.98);}
+  button.primary:disabled{opacity:0.5;cursor:not-allowed;}
+
+  button.ghost{
+    background:transparent;
+    border:1px solid var(--grid);
+    color:var(--paper);
+    border-radius:6px;
+    padding:10px 16px;
+    font-size:13px;
+    cursor:pointer;
+    font-family:'IBM Plex Mono',monospace;
+  }
+  button.ghost:hover{border-color:var(--signal);color:var(--signal);}
+
+  .notice{
+    font-size:12.5px;
+    line-height:1.6;
+    color:var(--muted);
+    background:var(--panel-2);
+    border:1px solid var(--grid);
+    border-radius:8px;
+    padding:12px 14px;
+    margin-top:14px;
+  }
+  .notice a{color:var(--signal);}
+  .notice.error{border-color:var(--danger);color:#ffc9c9;background:#2a1516;}
+
+  /* Scan status */
+  .scan-status{
+    display:none;
+    align-items:center;
+    gap:14px;
+    margin-top:20px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    color:var(--muted);
+  }
+  .scan-status.active{display:flex;}
+  .radar{
+    width:22px;height:22px;border-radius:50%;
+    border:2px solid var(--grid);
+    position:relative;
+    flex-shrink:0;
+  }
+  .radar::after{
+    content:"";
+    position:absolute;top:50%;left:50%;
+    width:50%;height:2px;
+    background:var(--signal);
+    transform-origin:left center;
+    animation:sweep 1s linear infinite;
+  }
+  @keyframes sweep{to{transform:rotate(360deg);}}
+
+  /* Results */
+  .results-head{
+    display:flex;justify-content:space-between;align-items:baseline;
+    margin-top:36px;margin-bottom:16px;flex-wrap:wrap;gap:10px;
+  }
+  .results-head h2{font-family:'Space Grotesk',sans-serif;font-size:20px;margin:0;}
+  .results-head .count{color:var(--signal);}
+  .results-meta{color:var(--muted);font-size:12.5px;font-family:'IBM Plex Mono',monospace;}
+
+  .lead-card{
+    background:var(--panel);
+    border:1px solid var(--grid);
+    border-left:3px solid var(--signal);
+    border-radius:8px;
+    padding:18px 20px;
+    margin-bottom:12px;
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:16px;
+  }
+  .lead-card.has-site{border-left-color:var(--verified);opacity:0.55;}
+  .lead-name{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:16px;margin:0 0 6px;}
+  .lead-addr{color:var(--muted);font-size:13.5px;margin:0 0 8px;}
+  .lead-meta{
+    display:flex;flex-wrap:wrap;gap:14px;
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--muted);
+  }
+  .lead-meta span b{color:var(--paper);}
+  .badge{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    padding:4px 8px;
+    border-radius:20px;
+    white-space:nowrap;
+    height:fit-content;
+  }
+  .badge.lead{background:rgba(255,176,32,0.15);color:var(--signal);border:1px solid var(--signal-dim);}
+  .badge.has{background:rgba(73,214,163,0.12);color:var(--verified);border:1px solid rgba(73,214,163,0.35);}
+  .lead-actions{display:flex;flex-direction:column;gap:8px;align-items:flex-end;justify-content:space-between;}
+  .lead-actions a{
+    color:var(--paper);
+    font-size:12px;
+    text-decoration:none;
+    border-bottom:1px solid var(--grid);
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .lead-actions a:hover{color:var(--signal);border-color:var(--signal);}
+  .place-id{font-size:10px;color:var(--muted);opacity:0.7;}
+
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;}
+  .empty{
+    text-align:center;padding:50px 20px;color:var(--muted);
+    font-family:'IBM Plex Mono',monospace;font-size:13px;
+  }
+  footer{
+    max-width:980px;margin:0 auto;padding:0 24px 60px;
+    color:var(--muted);font-size:12px;line-height:1.7;
+  }
+  footer a{color:var(--signal);}
+  @media (max-width:640px){
+    .field-row{grid-template-columns:1fr;}
+    .lead-card{grid-template-columns:1fr;}
+    .lead-actions{align-items:flex-start;flex-direction:row;flex-wrap:wrap;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Live scan · Google Places data</div>
+  <h1>Find businesses in the USA that <span>still need a website</span>.</h1>
+  <p class="sub">Search any city and industry. This scans real, current listings from Google Places and flags the ones with no website on file — real names, real addresses, real phone numbers, each with a link back to its Google Maps listing so you can verify it yourself before you reach out.</p>
+</header>
+
+<main>
+
+  <div class="panel">
+    <h2>1 · <b>Connect your data source</b></h2>
+    <div class="field-row">
+      <div class="field key-row">
+        <label for="apiKey">Google Places API key</label>
+        <input type="password" id="apiKey" placeholder="Paste your API key" autocomplete="off">
+        <button class="toggle-key" onclick="toggleKeyVisibility()">show</button>
+        <small>Used only in your browser for this session. Never saved, never sent anywhere but Google.</small>
+      </div>
+    </div>
+    <div class="notice">
+      Needs a Google Cloud project with <b>Places API (New)</b> enabled and billing on. Get a key at
+      <a href="https://console.cloud.google.com/google/maps-apis/credentials" target="_blank" rel="noopener">console.cloud.google.com/google/maps-apis/credentials</a>.
+      Restrict it to Places API for safety. Google's own pricing applies to each search — check
+      <a href="https://mapsplatform.google.com/pricing/" target="_blank" rel="noopener">mapsplatform.google.com/pricing</a> before running large scans.
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>2 · <b>Set the scan target</b></h2>
+    <div class="field-row">
+      <div class="field">
+        <label for="industry">Industry / business type</label>
+        <input type="text" id="industry" placeholder="e.g. plumbers, dentists, auto repair">
+      </div>
+      <div class="field">
+        <label for="location">City, State</label>
+        <input type="text" id="location" placeholder="e.g. Dearborn, MI">
+      </div>
+    </div>
+    <button class="primary" id="scanBtn" onclick="runScan()">Scan for leads →</button>
+    <div class="scan-status" id="scanStatus">
+      <div class="radar"></div>
+      <span id="scanStatusText">Querying Google Places…</span>
+    </div>
+    <div id="errorBox"></div>
+  </div>
+
+  <div id="resultsSection" style="display:none;">
+    <div class="results-head">
+      <h2><span class="count" id="leadCount">0</span> leads with no website found</h2>
+      <div class="results-meta" id="scanMeta"></div>
+    </div>
+    <div class="toolbar">
+      <button class="ghost" onclick="exportCSV()">Export leads as CSV</button>
+      <button class="ghost" id="loadMoreBtn" style="display:none;" onclick="loadMore()">Load next 20 results</button>
+      <button class="ghost" id="toggleAllBtn" onclick="toggleShowAll()">Show businesses that already have a site</button>
+    </div>
+    <div id="leadsList" style="margin-top:20px;"></div>
+  </div>
+
+</main>
+
+<footer>
+  Data comes live from the Google Places API at the moment you run a scan — nothing here is pre-loaded or invented.
+  Accuracy is only as good as Google's own listing data, so a "no website" flag means Google has no website on record for
+  that listing, not a certainty the business truly lacks one — always confirm by phone before pitching. Some listings may
+  show a Facebook or social page as their website field, which this tool cannot distinguish from a real site. Running scans
+  against your own Google Cloud key means usage is billed to your account per Google's pricing.
+</footer>
+
+<script>
+let currentPlaces = [];
+let showAll = false;
+let lastRequestBody = null;
+let nextPageToken = null;
+
+function toggleKeyVisibility(){
+  const el = document.getElementById('apiKey');
+  const btn = event.target;
+  if(el.type === 'password'){ el.type = 'text'; btn.textContent = 'hide'; }
+  else { el.type = 'password'; btn.textContent = 'show'; }
+}
+
+function setError(msg){
+  const box = document.getElementById('errorBox');
+  if(!msg){ box.innerHTML = ''; return; }
+  box.innerHTML = `<div class="notice error">${msg}</div>`;
+}
+
+async function runScan(fromPageToken){
+  const apiKey = document.getElementById('apiKey').value.trim();
+  const industry = document.getElementById('industry').value.trim();
+  const location = document.getElementById('location').value.trim();
+
+  setError('');
+
+  if(!apiKey){ setError('Add your Google Places API key first — this tool has no built-in key of its own.'); return; }
+  if(!industry || !location){ setError('Enter both an industry and a city/state to scan.'); return; }
+
+  const btn = document.getElementById('scanBtn');
+  const status = document.getElementById('scanStatus');
+  const statusText = document.getElementById('scanStatusText');
+  btn.disabled = true;
+  status.classList.add('active');
+  statusText.textContent = fromPageToken ? 'Pulling next page of results…' : `Scanning ${industry} in ${location}…`;
+
+  const body = fromPageToken
+    ? { pageToken: fromPageToken }
+    : { textQuery: `${industry} in ${location}`, maxResultCount: 20 };
+
+  try{
+    const res = await fetch('https://places.googleapis.com/v1/places:searchText', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Goog-Api-Key': apiKey,
+        'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.websiteUri,places.nationalPhoneNumber,places.rating,places.userRatingCount,places.googleMapsUri,places.businessStatus,nextPageToken'
+      },
+      body: JSON.stringify(body)
+    });
+
+    const data = await res.json();
+
+    if(!res.ok){
+      const reason = data?.error?.message || 'Request was rejected by Google.';
+      setError(`Google Places API error: ${reason} Double-check your key, that Places API (New) is enabled, and billing is active on the project.`);
+      status.classList.remove('active');
+      btn.disabled = false;
+      return;
+    }
+
+    const places = data.places || [];
+    if(!fromPageToken){ currentPlaces = []; }
+    currentPlaces = currentPlaces.concat(places);
+    nextPageToken = data.nextPageToken || null;
+    lastRequestBody = { industry, location };
+
+    renderResults();
+
+    document.getElementById('loadMoreBtn').style.display = nextPageToken ? 'inline-flex' : 'none';
+
+  } catch(err){
+    setError('Could not reach Google Places API. Check your internet connection, or that the key allows requests from this page (referrer restrictions).');
+  }
+
+  status.classList.remove('active');
+  btn.disabled = false;
+}
+
+function loadMore(){
+  if(nextPageToken) runScan(nextPageToken);
+}
+
+function toggleShowAll(){
+  showAll = !showAll;
+  document.getElementById('toggleAllBtn').textContent = showAll
+    ? 'Hide businesses that already have a site'
+    : 'Show businesses that already have a site';
+  renderResults();
+}
+
+function renderResults(){
+  const section = document.getElementById('resultsSection');
+  section.style.display = 'block';
+
+  const leadsOnly = currentPlaces.filter(p => !p.websiteUri);
+  const visible = showAll ? currentPlaces : leadsOnly;
+
+  document.getElementById('leadCount').textContent = leadsOnly.length;
+  document.getElementById('scanMeta').textContent =
+    `${currentPlaces.length} businesses scanned · ${lastRequestBody ? lastRequestBody.industry + ' in ' + lastRequestBody.location : ''}`;
+
+  const list = document.getElementById('leadsList');
+
+  if(visible.length === 0){
+    list.innerHTML = `<div class="empty">No results to show yet — run a scan above.</div>`;
+    return;
+  }
+
+  list.innerHTML = visible.map(p => {
+    const hasSite = !!p.websiteUri;
+    const name = p.displayName?.text || 'Unnamed listing';
+    const addr = p.formattedAddress || 'Address not on file';
+    const phone = p.nationalPhoneNumber || '—';
+    const rating = p.rating ? `${p.rating}★ (${p.userRatingCount || 0})` : 'No rating yet';
+    const mapsUri = p.googleMapsUri || '#';
+    const status = p.businessStatus || 'UNKNOWN';
+
+    return `
+      <div class="lead-card ${hasSite ? 'has-site' : ''}">
+        <div>
+          <p class="lead-name">${escapeHtml(name)}</p>
+          <p class="lead-addr">${escapeHtml(addr)}</p>
+          <div class="lead-meta">
+            <span><b>Phone:</b> ${escapeHtml(phone)}</span>
+            <span><b>Rating:</b> ${escapeHtml(rating)}</span>
+            <span><b>Status:</b> ${escapeHtml(status)}</span>
+          </div>
+          <div class="place-id mono">place_id: ${escapeHtml(p.id || 'n/a')}</div>
+        </div>
+        <div class="lead-actions">
+          <span class="badge ${hasSite ? 'has' : 'lead'}">${hasSite ? 'Has website' : 'No website found'}</span>
+          <a href="${mapsUri}" target="_blank" rel="noopener">Verify on Google Maps ↗</a>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function exportCSV(){
+  const leadsOnly = currentPlaces.filter(p => !p.websiteUri);
+  if(leadsOnly.length === 0){ setError('No leads to export yet — run a scan first.'); return; }
+
+  const rows = [['Business Name','Address','Phone','Rating','Rating Count','Status','Google Maps Link','Place ID']];
+  leadsOnly.forEach(p => {
+    rows.push([
+      p.displayName?.text || '',
+      p.formattedAddress || '',
+      p.nationalPhoneNumber || '',
+      p.rating || '',
+      p.userRatingCount || '',
+      p.businessStatus || '',
+      p.googleMapsUri || '',
+      p.id || ''
+    ]);
+  });
+
+  const csv = rows.map(r => r.map(cell => `"${String(cell).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const safeLoc = (lastRequestBody?.location || 'leads').replace(/[^a-z0-9]+/gi,'-').toLowerCase();
+  const safeInd = (lastRequestBody?.industry || 'businesses').replace(/[^a-z0-9]+/gi,'-').toLowerCase();
+  a.href = url;
+  a.download = `no-website-leads-${safeInd}-${safeLoc}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+
+</body>
+</html>
