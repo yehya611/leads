@@ -1,366 +1,74 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>No-Site Lead Tracker — No API Required</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --ink:#10151c;
-    --panel:#1a2330;
-    --panel-2:#212c3b;
-    --grid:#2b3a4a;
-    --paper:#eef2f5;
-    --muted:#8ea0b2;
-    --signal:#ffb020;
-    --signal-dim:#7a5a1e;
-    --verified:#49d6a3;
-    --danger:#ff6b6b;
-    --radius:10px;
-  }
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
-  body{
-    background:
-      linear-gradient(var(--ink),var(--ink)),
-      repeating-linear-gradient(0deg, transparent 0 39px, rgba(43,58,74,0.35) 39px 40px),
-      repeating-linear-gradient(90deg, transparent 0 39px, rgba(43,58,74,0.35) 39px 40px);
-    color:var(--paper);
-    font-family:'Inter',sans-serif;
-    min-height:100vh;
-  }
-  .mono{font-family:'IBM Plex Mono',monospace;}
-  header{padding:40px 24px 20px;max-width:980px;margin:0 auto;}
-  .eyebrow{
-    font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.14em;
-    text-transform:uppercase;color:var(--signal);display:flex;align-items:center;gap:8px;
-  }
-  .eyebrow::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--signal);
-    box-shadow:0 0 0 0 rgba(255,176,32,0.6);animation:pulse 1.8s infinite;}
-  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,176,32,0.55);}70%{box-shadow:0 0 0 8px rgba(255,176,32,0);}100%{box-shadow:0 0 0 0 rgba(255,176,32,0);}}
-  h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(26px,4vw,40px);line-height:1.1;margin:14px 0 10px;letter-spacing:-0.01em;}
-  h1 span{color:var(--signal);}
-  .sub{color:var(--muted);font-size:15px;line-height:1.55;max-width:660px;}
-  main{max-width:980px;margin:0 auto;padding:0 24px 80px;}
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Business Name - Get Your Professional Website</title>
+  <style>
+    :root{--primary:#2563eb;--primary-dark:#1d4ed8;--secondary:#7c3aed;--accent:#f59e0b;--dark:#0f172a;--light:#f8fafc;-
+  -gray:#64748b;--success:#10b981}
+    *{margin:0;padding:0;border:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe
+  UI',Roboto,Helvetica,Arial,sans-serif;line-height:1.5;color:#334155}
+    body{background:#f8fafc;min-height:100vh;display:flex;flex-direction:column;}
 
-  .panel{background:var(--panel);border:1px solid var(--grid);border-radius:var(--radius);padding:24px;margin-top:24px;}
-  .panel h2{font-family:'Space Grotesk',sans-serif;font-size:14px;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin:0 0 18px;}
-  .panel h2 b{color:var(--paper);}
+    /* Header */
+    header{position:fixed;top:0;left:0;right:0;background:white;padding:1rem;z-index:999;box-shadow:0 2px 10px
+  rgba(37,99,235,.1);display:flex;justify-content:space-between;align-items:center;}
+    .logo{font-size:1.5rem;font-weight:bold;color:#2563eb;display:flex;flex-direction:column;line-height:1.2;}
+    .owner-badge{background:var(--dark);color:white;padding:.4rem
+  1rem;border-radius:8px;font-size:.9rem;text-align:center;margin-top:.2rem;}
 
-  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
-  .field-row.three{grid-template-columns:1fr 1fr 1fr;}
-  .field{display:flex;flex-direction:column;gap:6px;}
-  .field label{font-size:12px;color:var(--muted);font-family:'IBM Plex Mono',monospace;}
-  .field input, .field select{
-    background:var(--ink);border:1px solid var(--grid);border-radius:6px;padding:11px 12px;
-    color:var(--paper);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border-color .15s;
-  }
-  .field input:focus, .field select:focus{border-color:var(--signal);}
-  .field small{color:var(--muted);font-size:11.5px;}
+    /* Navigation */
+    nav ul{display:flex;gap:1.5rem;list-style:none;}
+    nav a{text-decoration:none;color:#334155;font-weight:600;font-size:.95rem;transition:color .3s;}
+    nav a:hover{color:var(--primary);}
 
-  .radio-group{display:flex;gap:10px;}
-  .radio-group label{
-    display:flex;align-items:center;gap:6px;font-size:13px;color:var(--paper);
-    background:var(--ink);border:1px solid var(--grid);border-radius:6px;padding:9px 12px;cursor:pointer;flex:1;
-  }
-  .radio-group input{accent-color:var(--signal);}
+    /* Hero */
+    .hero{background:linear-gradient(135deg,var(--dark),#1e293b);color:white;padding:8rem 1.5rem
+  4rem;display:flex;flex-direction:column;align-items:center;text-align:center;}
+    .hero h1{font-size:2.8rem;margin-bottom:1rem;line-height:1.1;font-weight:700;}
+    .hero p{font-size:1.3rem;color:#cbd5e1;margin-bottom:2rem;max-width:600px;}
 
-  button.primary{
-    background:var(--signal);color:#1a1300;border:none;border-radius:6px;padding:13px 22px;
-    font-weight:600;font-size:14px;font-family:'Space Grotesk',sans-serif;cursor:pointer;
-  }
-  button.primary:hover{filter:brightness(1.08);}
-  button.ghost{
-    background:transparent;border:1px solid var(--grid);color:var(--paper);border-radius:6px;
-    padding:9px 14px;font-size:12.5px;cursor:pointer;font-family:'IBM Plex Mono',monospace;
-  }
-  button.ghost:hover{border-color:var(--signal);color:var(--signal);}
-  button.tiny{padding:7px 10px;font-size:11.5px;}
 
-  .notice{font-size:12.5px;line-height:1.6;color:var(--muted);background:var(--panel-2);border:1px solid var(--grid);border-radius:8px;padding:12px 14px;margin-top:14px;}
-  .notice a{color:var(--signal);}
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Business Name - Get Your Professional Website</title>
+  <style>
+    :root{--primary:#2563eb;--primary-dark:#1d4ed8;--secondary:#7c3aed;--accent:#f59e0b;--dark:#0f172a;--light:#f8fafc;--gray:#64748b;--success:#10b981}
+    *{margin:0;padding:0;border:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;line-height:1.5;color:#334155}
+    body{background:#f8fafc;min-height:100vh;display:flex;flex-direction:column;}
 
-  .results-head{display:flex;justify-content:space-between;align-items:baseline;margin-top:36px;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
-  .results-head h2{font-family:'Space Grotesk',sans-serif;font-size:20px;margin:0;}
-  .results-head .count{color:var(--signal);}
-  .results-meta{color:var(--muted);font-size:12.5px;font-family:'IBM Plex Mono',monospace;}
+    /* Header */
+    header{position:fixed;top:0;left:0;right:0;background:white;padding:1rem;z-index:999;box-shadow:0 2px 10px rgba(37,99,235,.1);display:flex;justify-content:space-between;align-items:center;}
+    .logo{font-size:1.5rem;font-weight:bold;color:#2563eb;display:flex;flex-direction:column;line-height:1.2;}
+    .owner-badge{background:var(--dark);color:white;padding:.4rem 1rem;border-radius:8px;font-size:.9rem;text-align:center;margin-top:.2rem;}
 
-  .lead-card{
-    background:var(--panel);border:1px solid var(--grid);border-left:3px solid var(--signal);
-    border-radius:8px;padding:18px 20px;margin-bottom:12px;display:grid;grid-template-columns:1fr auto;gap:16px;
-  }
-  .lead-card.has-site{border-left-color:var(--verified);opacity:0.6;}
-  .lead-name{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:16px;margin:0 0 6px;}
-  .lead-owner{color:var(--signal);font-size:12.5px;margin:0 0 8px;font-family:'IBM Plex Mono',monospace;}
-  .lead-owner.empty{color:var(--muted);font-style:italic;}
-  .lead-addr{color:var(--muted);font-size:13.5px;margin:0 0 8px;}
-  .lead-meta{display:flex;flex-wrap:wrap;gap:14px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--muted);}
-  .lead-meta span b{color:var(--paper);}
-  .badge{font-family:'IBM Plex Mono',monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:0.06em;padding:4px 8px;border-radius:20px;white-space:nowrap;height:fit-content;}
-  .badge.lead{background:rgba(255,176,32,0.15);color:var(--signal);border:1px solid var(--signal-dim);}
-  .badge.has{background:rgba(73,214,163,0.12);color:var(--verified);border:1px solid rgba(73,214,163,0.35);}
-  .lead-actions{display:flex;flex-direction:column;gap:8px;align-items:flex-end;}
-  .lookup-links{display:flex;flex-direction:column;gap:4px;align-items:flex-end;}
-  .lookup-links a{color:var(--paper);font-size:11.5px;text-decoration:none;border-bottom:1px solid var(--grid);font-family:'IBM Plex Mono',monospace;}
-  .lookup-links a:hover{color:var(--signal);border-color:var(--signal);}
-  .owner-edit{display:flex;gap:6px;margin-top:4px;}
-  .owner-edit input{
-    background:var(--ink);border:1px solid var(--grid);border-radius:4px;color:var(--paper);
-    font-size:11.5px;padding:5px 7px;font-family:'IBM Plex Mono',monospace;width:130px;
-  }
-  .remove-btn{background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;font-family:'IBM Plex Mono',monospace;text-decoration:underline;}
-  .remove-btn:hover{color:var(--danger);}
+    /* Navigation */
+    nav ul{display:flex;gap:1.5rem;list-style:none;}
+    nav a{text-decoration:none;color:#334155;font-weight:600;font-size:.95rem;transition:color .3s;}
+    nav a:hover{color:var(--primary);}
 
-  .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;}
-  .empty{text-align:center;padding:50px 20px;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:13px;}
-  footer{max-width:980px;margin:0 auto;padding:0 24px 60px;color:var(--muted);font-size:12px;line-height:1.7;}
-  footer a{color:var(--signal);}
-  @media (max-width:640px){
-    .field-row, .field-row.three{grid-template-columns:1fr;}
-    .lead-card{grid-template-columns:1fr;}
-    .lead-actions, .lookup-links{align-items:flex-start;}
-  }
-</style>
-</head>
-<body>
+    /* Hero */
+    .hero{background:linear-gradient(135deg,var(--dark),#1e293b);color:white;padding:8rem 1.5rem 4rem;display:flex;flex-direction:column;align-items:center;text-align:center;}
+    .hero h1{font-size:2.8rem;margin-bottom:1rem;line-height:1.1;font-weight:700;}
+    .hero p{font-size:1.3rem;color:#cbd5e1;margin-bottom:2rem;max-width:600px;}
 
-<header>
-  <div class="eyebrow">Manual mode · no API key needed</div>
-  <h1>Track businesses that <span>still need a website</span> — no API, no key.</h1>
-  <p class="sub">Add businesses yourself as you find them — directories, drive-bys, referrals, wherever. Each lead gets a one-click "Look up owner" that jumps straight into that state's official business registry (via OpenCorporates, pre-filled with the name and state), plus a direct link to the full state-by-state registry directory and a targeted Google search, so every owner name you attach is one you verified yourself.</p>
-</header>
+    /* Buttons */
+    .btn{display:inline-block;padding:.8rem 2rem;background:white;border-radius:8px;font-weight:700;text-decoration:none;color:var(--dark);transition:transform .3s,box-shadow
+  .3s;margin-top:1.5rem;cursor:pointer;}
+    .btn:hover{transform:translateY(-3px);}
 
-<main>
+    /* Problem Section */
+    .problem{background:white;padding:4rem 1.5rem;text-align:center;}
+    .problem h2{font-size:2.2rem;margin-bottom:1.5rem;color:#1e293b;}
+    .pain-points{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem,max-width:1000px;margin:0 auto;padding-top:3rem;}
 
-  <div class="panel">
-    <h2><b>Add a lead</b></h2>
-    <div class="field-row three">
-      <div class="field">
-        <label for="bName">Business name *</label>
-        <input type="text" id="bName" placeholder="e.g. Main Street Plumbing">
-      </div>
-      <div class="field">
-        <label for="bIndustry">Industry</label>
-        <input type="text" id="bIndustry" placeholder="e.g. Plumbing">
-      </div>
-      <div class="field">
-        <label for="bPhone">Phone</label>
-        <input type="text" id="bPhone" placeholder="(313) 555-0100">
-      </div>
-    </div>
-    <div class="field-row three">
-      <div class="field">
-        <label for="bAddress">Street address</label>
-        <input type="text" id="bAddress" placeholder="123 Main St">
-      </div>
-      <div class="field">
-        <label for="bCity">City</label>
-        <input type="text" id="bCity" placeholder="Dearborn">
-      </div>
-      <div class="field">
-        <label for="bState">State *</label>
-        <select id="bState"></select>
-      </div>
-    </div>
-    <div class="field-row">
-      <div class="field">
-        <label>Website status</label>
-        <div class="radio-group">
-          <label><input type="radio" name="hasSite" value="no" checked> No website found</label>
-          <label><input type="radio" name="hasSite" value="yes"> Already has a website</label>
-        </div>
-      </div>
-      <div class="field">
-        <label for="bOwner">Owner name (optional — fill in once you verify it)</label>
-        <input type="text" id="bOwner" placeholder="Leave blank, look it up after adding">
-      </div>
-    </div>
-    <button class="primary" onclick="addLead()">+ Add to lead list</button>
-    <div class="notice">
-      Nothing here is invented. Add only what you've actually found — the "Look up owner" link exists so you
-      can pull the real registered agent / officer name from a state's own public records before you write it in.
-      No data is sent anywhere; everything stays in this browser tab and clears on refresh unless you export it.
-    </div>
-  </div>
+    /* Portfolio */
+    .portfolio{background:var(--light);padding:4rem 1.5rem;text-align:center;overflow:hidden;}
+    .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-top:3rem;max-width:1200px;margin-left:auto;margin-right:auto;padding:0 auto;}
 
-  <div id="resultsSection">
-    <div class="results-head">
-      <h2><span class="count" id="leadCount">0</span> leads with no website</h2>
-      <div class="results-meta" id="scanMeta">0 total tracked</div>
-    </div>
-    <div class="toolbar">
-      <button class="ghost" onclick="exportCSV()">Export leads as CSV</button>
-      <button class="ghost" id="toggleAllBtn" onclick="toggleShowAll()">Show businesses that already have a site</button>
-    </div>
-    <div id="leadsList" style="margin-top:20px;"></div>
-  </div>
-
-</main>
-
-<footer>
-  "Look up owner" opens up to three real, live sources: an OpenCorporates search pre-filled with the business
-  name and jurisdiction (OpenCorporates aggregates official state filings), the official state-by-state Secretary
-  of State registry directory so you can go straight to that state's own .gov database, and a plain Google search
-  as a fallback. Officer/owner disclosure varies a lot by state — some states publish officer names for free,
-  others (like California) only show entity-level and registered-agent data. Always treat what you find as a
-  starting point to confirm, not a guaranteed current owner, since annual-report cycles mean state records can
-  lag real ownership changes by up to a year.
-</footer>
-
-<script>
-const STATES = [
-  ["AL","Alabama"],["AK","Alaska"],["AZ","Arizona"],["AR","Arkansas"],["CA","California"],
-  ["CO","Colorado"],["CT","Connecticut"],["DE","Delaware"],["DC","District of Columbia"],["FL","Florida"],
-  ["GA","Georgia"],["HI","Hawaii"],["ID","Idaho"],["IL","Illinois"],["IN","Indiana"],
-  ["IA","Iowa"],["KS","Kansas"],["KY","Kentucky"],["LA","Louisiana"],["ME","Maine"],
-  ["MD","Maryland"],["MA","Massachusetts"],["MI","Michigan"],["MN","Minnesota"],["MS","Mississippi"],
-  ["MO","Missouri"],["MT","Montana"],["NE","Nebraska"],["NV","Nevada"],["NH","New Hampshire"],
-  ["NJ","New Jersey"],["NM","New Mexico"],["NY","New York"],["NC","North Carolina"],["ND","North Dakota"],
-  ["OH","Ohio"],["OK","Oklahoma"],["OR","Oregon"],["PA","Pennsylvania"],["RI","Rhode Island"],
-  ["SC","South Carolina"],["SD","South Dakota"],["TN","Tennessee"],["TX","Texas"],["UT","Utah"],
-  ["VT","Vermont"],["VA","Virginia"],["WA","Washington"],["WV","West Virginia"],["WI","Wisconsin"],["WY","Wyoming"]
-];
-
-const stateSelect = document.getElementById('bState');
-STATES.forEach(([abbr,name]) => {
-  const opt = document.createElement('option');
-  opt.value = abbr;
-  opt.textContent = `${name} (${abbr})`;
-  stateSelect.appendChild(opt);
-});
-
-let leads = [];
-let showAll = false;
-let idCounter = 0;
-
-function addLead(){
-  const name = document.getElementById('bName').value.trim();
-  const industry = document.getElementById('bIndustry').value.trim();
-  const phone = document.getElementById('bPhone').value.trim();
-  const address = document.getElementById('bAddress').value.trim();
-  const city = document.getElementById('bCity').value.trim();
-  const state = document.getElementById('bState').value;
-  const hasSite = document.querySelector('input[name="hasSite"]:checked').value === 'yes';
-  const owner = document.getElementById('bOwner').value.trim();
-
-  if(!name){ alert('Business name is required.'); return; }
-
-  leads.push({
-    id: ++idCounter, name, industry, phone, address, city, state, hasSite, owner
-  });
-
-  document.getElementById('bName').value = '';
-  document.getElementById('bIndustry').value = '';
-  document.getElementById('bPhone').value = '';
-  document.getElementById('bAddress').value = '';
-  document.getElementById('bCity').value = '';
-  document.getElementById('bOwner').value = '';
-
-  renderResults();
-}
-
-function removeLead(id){
-  leads = leads.filter(l => l.id !== id);
-  renderResults();
-}
-
-function updateOwner(id, value){
-  const lead = leads.find(l => l.id === id);
-  if(lead) lead.owner = value;
-}
-
-function toggleShowAll(){
-  showAll = !showAll;
-  document.getElementById('toggleAllBtn').textContent = showAll
-    ? 'Hide businesses that already have a site'
-    : 'Show businesses that already have a site';
-  renderResults();
-}
-
-function ocLink(name, state){
-  const jurisdiction = state ? `us_${state.toLowerCase()}` : '';
-  const q = encodeURIComponent(name);
-  return `https://opencorporates.com/companies?q=${q}${jurisdiction ? '&jurisdiction_code='+jurisdiction : ''}`;
-}
-
-function googleLink(name, city, state){
-  const q = encodeURIComponent(`"${name}" ${city || ''} ${state || ''} owner OR "registered agent"`);
-  return `https://www.google.com/search?q=${q}`;
-}
-
-const STATE_DIRECTORY_URL = 'https://www.llcuniversity.com/50-secretary-of-state-sos-business-entity-search/';
-
-function renderResults(){
-  const leadsOnly = leads.filter(l => !l.hasSite);
-  const visible = showAll ? leads : leadsOnly;
-
-  document.getElementById('leadCount').textContent = leadsOnly.length;
-  document.getElementById('scanMeta').textContent = `${leads.length} total tracked`;
-
-  const list = document.getElementById('leadsList');
-
-  if(visible.length === 0){
-    list.innerHTML = `<div class="empty">No leads added yet — use the form above.</div>`;
-    return;
-  }
-
-  list.innerHTML = visible.map(l => `
-    <div class="lead-card ${l.hasSite ? 'has-site' : ''}">
-      <div>
-        <p class="lead-name">${escapeHtml(l.name)}</p>
-        <p class="lead-owner ${l.owner ? '' : 'empty'}">${l.owner ? 'Owner: ' + escapeHtml(l.owner) : 'Owner not yet looked up'}</p>
-        <p class="lead-addr">${escapeHtml([l.address, l.city, l.state].filter(Boolean).join(', ')) || 'No address on file'}</p>
-        <div class="lead-meta">
-          <span><b>Industry:</b> ${escapeHtml(l.industry || '—')}</span>
-          <span><b>Phone:</b> ${escapeHtml(l.phone || '—')}</span>
-        </div>
-        <div class="owner-edit">
-          <input type="text" placeholder="paste verified owner name" value="${escapeHtml(l.owner || '')}"
-            onchange="updateOwner(${l.id}, this.value)">
-          <button class="remove-btn" onclick="removeLead(${l.id})">remove</button>
-        </div>
-      </div>
-      <div class="lead-actions">
-        <span class="badge ${l.hasSite ? 'has' : 'lead'}">${l.hasSite ? 'Has website' : 'No website found'}</span>
-        <div class="lookup-links">
-          <a href="${ocLink(l.name, l.state)}" target="_blank" rel="noopener">OpenCorporates (${l.state || 'US'}) ↗</a>
-          <a href="${STATE_DIRECTORY_URL}" target="_blank" rel="noopener">State registry directory ↗</a>
-          <a href="${googleLink(l.name, l.city, l.state)}" target="_blank" rel="noopener">Google search ↗</a>
-        </div>
-      </div>
-    </div>
-  `).join('');
-}
-
-function escapeHtml(str){
-  const div = document.createElement('div');
-  div.textContent = str == null ? '' : str;
-  return div.innerHTML;
-}
-
-function exportCSV(){
-  const leadsOnly = leads.filter(l => !l.hasSite);
-  if(leadsOnly.length === 0){ alert('No leads to export yet.'); return; }
-
-  const rows = [['Business Name','Owner','Industry','Phone','Address','City','State','Has Website']];
-  leadsOnly.forEach(l => {
-    rows.push([l.name, l.owner, l.industry, l.phone, l.address, l.city, l.state, l.hasSite ? 'Yes' : 'No']);
-  });
-
-  const csv = rows.map(r => r.map(cell => `"${String(cell || '').replace(/"/g,'""')}"`).join(',')).join('\n');
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'no-website-leads.csv';
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-renderResults();
-</script>
-
-</body>
-</html>
+    /* Contact Form */
+    .contact-section{background:white;padding:4rem 1.5rem;text-align:center;color:#ffffff;}
